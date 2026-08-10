@@ -1,0 +1,161 @@
+{
+    "version": 1,
+    "type": "synthetic-data",
+    "info": {
+        "name": "AngleForge",
+        "description": "AngleForge"
+    },
+    "parameters": [
+        {
+            "name": "Angle preset",
+            "value": "top_down",
+            "type": "select",
+            "valid": [
+                {
+                    "label": "Top-down / overhead",
+                    "value": "top_down"
+                },
+                {
+                    "label": "Bird's-eye",
+                    "value": "birds_eye"
+                },
+                {
+                    "label": "Worm's-eye",
+                    "value": "worms_eye"
+                },
+                {
+                    "label": "Rotate left 45°",
+                    "value": "rotate_left_45"
+                },
+                {
+                    "label": "Rotate right 45°",
+                    "value": "rotate_right_45"
+                },
+                {
+                    "label": "Rotate left 90°",
+                    "value": "rotate_left_90"
+                },
+                {
+                    "label": "Rotate right 90°",
+                    "value": "rotate_right_90"
+                },
+                {
+                    "label": "Close-up",
+                    "value": "close_up"
+                },
+                {
+                    "label": "Wide-angle",
+                    "value": "wide_angle"
+                },
+                {
+                    "label": "Move left",
+                    "value": "move_left"
+                },
+                {
+                    "label": "Move right",
+                    "value": "move_right"
+                },
+                {
+                    "label": "Move forward",
+                    "value": "move_forward"
+                },
+                {
+                    "label": "Move down",
+                    "value": "move_down"
+                }
+            ],
+            "help": "Every source image is re-rendered to this camera angle so the dataset is visually consistent.",
+            "param": "angle"
+        },
+        {
+            "name": "AngleForge Space",
+            "value": "eoinedge/angleforge",
+            "type": "string",
+            "help": "Hugging Face Space id that runs the Qwen multi-angle model (owner/name).",
+            "param": "angleforge-space"
+        },
+        {
+            "name": "Hugging Face token",
+            "value": "",
+            "type": "secret",
+            "optional": true,
+            "help": "Only needed if the AngleForge Space is private. Leave blank for a public Space.",
+            "param": "HF_TOKEN"
+        },
+        {
+            "name": "Output image size",
+            "value": "512",
+            "type": "int",
+            "help": "Longest side of the normalised image, in pixels.",
+            "param": "image-size"
+        },
+        {
+            "name": "Source category",
+            "value": "training",
+            "type": "select",
+            "valid": [
+                {
+                    "label": "Training",
+                    "value": "training"
+                },
+                {
+                    "label": "Testing",
+                    "value": "testing"
+                },
+                {
+                    "label": "All",
+                    "value": "all"
+                }
+            ],
+            "help": "Which existing project images to normalise.",
+            "param": "source-category"
+        },
+        {
+            "name": "Upload to category",
+            "value": "training",
+            "type": "select",
+            "valid": [
+                {
+                    "label": "Same as source",
+                    "value": "same"
+                },
+                {
+                    "label": "Split 80/20",
+                    "value": "split"
+                },
+                {
+                    "label": "Training",
+                    "value": "training"
+                },
+                {
+                    "label": "Testing",
+                    "value": "testing"
+                }
+            ],
+            "help": "Which category the normalised images are uploaded to.",
+            "param": "upload-category"
+        },
+        {
+            "name": "Only these labels",
+            "value": "",
+            "type": "string",
+            "optional": true,
+            "help": "Optional comma-separated list of labels to process (blank = all labels).",
+            "param": "labels"
+        },
+        {
+            "name": "Max images",
+            "value": "0",
+            "type": "int",
+            "help": "Maximum number of source images to process (0 = no limit).",
+            "param": "max-samples"
+        },
+        {
+            "name": "Seed",
+            "value": "1234",
+            "type": "int",
+            "help": "Generation seed for reproducible renders.",
+            "param": "seed"
+        }
+    ]
+}
