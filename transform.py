@@ -1,4 +1,4 @@
-"""AngleForge — Edge Impulse custom synthetic data block.
+"""AngleNorm — Edge Impulse custom synthetic data block.
 
 Normalises the camera angle of your existing project images so the whole
 dataset is visually consistent (e.g. everything shot top-down). For each source
@@ -6,7 +6,7 @@ image it:
 
 1. Lists your existing samples via the Studio API.
 2. Downloads the image.
-3. Sends it to the public **AngleForge** Hugging Face Space, which runs the real
+3. Sends it to the public **AngleNorm** Hugging Face Space, which runs the real
    Qwen-Image-Edit multi-angle model on ZeroGPU, requesting the selected angle.
 4. Uploads the re-rendered image back to the project via the Ingestion API,
    tagged with the ``x-synthetic-data-job-id`` header so it previews in the
@@ -59,11 +59,11 @@ def _require(value: str, name: str) -> str:
 # Arguments (defined in parameters.json + auto-passed synthetic-data args)
 # --------------------------------------------------------------------------- #
 parser = argparse.ArgumentParser(
-    description="Normalise existing Edge Impulse images to a consistent camera angle via AngleForge."
+    description="Normalise existing Edge Impulse images to a consistent camera angle via AngleNorm."
 )
 parser.add_argument("--angle", type=str, default="top_down", help="Angle preset key")
-parser.add_argument("--angleforge-space", type=str, default="eoinedge/angleforge",
-                    help="AngleForge Hugging Face Space id (owner/name)")
+parser.add_argument("--anglenorm-space", type=str, default="eoinedge/AngleNorm",
+                    help="AngleNorm Hugging Face Space id (owner/name)")
 parser.add_argument("--image-size", type=int, default=512, help="Longest side of output image")
 parser.add_argument("--source-category", type=str, default="training",
                     help="training | testing | all")
@@ -149,10 +149,10 @@ def upload_image(png_bytes: bytes, filename: str, label: str, category: str, met
 
 
 # --------------------------------------------------------------------------- #
-# AngleForge (Hugging Face Space) client
+# AngleNorm (Hugging Face Space) client
 # --------------------------------------------------------------------------- #
 def _result_to_png_bytes(item) -> bytes:
-    """Turn one AngleForge gallery item into real PNG bytes.
+    """Turn one AngleNorm gallery item into real PNG bytes.
 
     The ``/grab_viewpoints_ui`` endpoint returns gallery items as
     ``{"image": <local filepath or URL>, "caption": ...}``; older/other shapes
@@ -199,13 +199,13 @@ def _result_to_png_bytes(item) -> bytes:
         r.raise_for_status()
         return _png(_PILImage.open(io.BytesIO(r.content)))
 
-    raise RuntimeError(f"Unexpected AngleForge output item: {item!r}")
+    raise RuntimeError(f"Unexpected AngleNorm output item: {item!r}")
 
 
 def make_client(space: str):
     from gradio_client import Client
 
-    # AngleForge is public, so no token is required. Only pass one for a private
+    # AngleNorm is public, so no token is required. Only pass one for a private
     # Space, and do it defensively since the keyword differs across
     # gradio_client versions (hf_token vs. headers-based auth).
     if not HF_TOKEN:
@@ -238,7 +238,7 @@ def render_angle(client, image_path: str, angle: str, size: int, seed: int) -> b
         gallery, status = result, ""
 
     if not gallery:
-        raise RuntimeError(f"AngleForge returned no image. {status}".strip())
+        raise RuntimeError(f"AngleNorm returned no image. {status}".strip())
     return _result_to_png_bytes(gallery[0])
 
 
@@ -246,8 +246,8 @@ def render_angle(client, image_path: str, angle: str, size: int, seed: int) -> b
 # Main
 # --------------------------------------------------------------------------- #
 def main():
-    print(f"AngleForge synthetic-data block")
-    print(f"  Space:            {args.angleforge_space}")
+    print(f"AngleNorm synthetic-data block")
+    print(f"  Space:            {args.anglenorm_space}")
     print(f"  Angle:            {args.angle}")
     print(f"  Source category:  {args.source_category}")
     print(f"  Upload category:  {args.upload_category}")
@@ -257,9 +257,9 @@ def main():
     print("")
 
     try:
-        client = make_client(args.angleforge_space)
+        client = make_client(args.anglenorm_space)
     except Exception as exc:  # noqa: BLE001
-        print(f"Failed to connect to AngleForge Space '{args.angleforge_space}': {exc}")
+        print(f"Failed to connect to AngleNorm Space '{args.anglenorm_space}': {exc}")
         print(traceback.format_exc())
         sys.exit(1)
 
@@ -291,10 +291,10 @@ def main():
                 upload_image(
                     png, filename, label, upload_category,
                     metadata={
-                        "generated_by": "angleforge",
+                        "generated_by": "anglenorm",
                         "angle": args.angle,
                         "source_sample_id": str(sample_id),
-                        "angleforge_space": args.angleforge_space,
+                        "anglenorm_space": args.anglenorm_space,
                     },
                 )
             processed += 1

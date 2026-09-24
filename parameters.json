@@ -2,8 +2,8 @@
     "version": 1,
     "type": "synthetic-data",
     "info": {
-        "name": "AngleForge",
-        "description": "AngleForge"
+        "name": "AngleNorm",
+        "description": "AngleNorm"
     },
     "parameters": [
         {
@@ -68,18 +68,18 @@
             "param": "angle"
         },
         {
-            "name": "AngleForge Space",
-            "value": "eoinedge/angleforge",
+            "name": "AngleNorm Space",
+            "value": "eoinedge/AngleNorm",
             "type": "string",
             "help": "Hugging Face Space id that runs the Qwen multi-angle model (owner/name).",
-            "param": "angleforge-space"
+            "param": "anglenorm-space"
         },
         {
             "name": "Hugging Face token",
             "value": "",
             "type": "secret",
             "optional": true,
-            "help": "Only needed if the AngleForge Space is private. Leave blank for a public Space.",
+            "help": "Only needed if the AngleNorm Space is private. Leave blank for a public Space.",
             "param": "HF_TOKEN"
         },
         {
